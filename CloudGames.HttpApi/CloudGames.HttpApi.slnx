@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="CloudGames.Application/CloudGames.Application.csproj" />
+  <Project Path="CloudGames.Domain/CloudGames.Domain.csproj" />
+  <Project Path="CloudGames.HttpApi/CloudGames.HttpApi.csproj" />
+  <Project Path="CloudGames.Infrastructure/CloudGames.Infrastructure.csproj" />
+</Solution>
