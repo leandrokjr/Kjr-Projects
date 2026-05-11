@@ -18,7 +18,7 @@ public class UserController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> CreateUser(
-        [FromBody] UserInput input
+        [FromBody] UserCreateInput input
     )
     {
         try
@@ -76,20 +76,21 @@ public class UserController : ControllerBase
 
     [HttpPut]
     public async Task<IActionResult> UpdateUser(
-        [FromBody] UserInput input
+        [FromBody] UserUpdateInput input
     )
     {
         try
         {
             var user = new User()
             {
+                Id = input.Id,
                 Name = input.Name,
                 Email = input.Email,
                 Password = input.Password,
                 Administrator = input.Administrator
             };
 
-            _userRepository.Create(user);
+            _userRepository.Update(user);
 
             return NoContent();
         }
@@ -100,21 +101,14 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete]
+    [Route("{id}")]
     public async Task<IActionResult> DeleteUser(
-        [FromBody] UserInput input
+        [FromRoute] Guid id
     )
     {
         try
         {
-            var user = new User()
-            {
-                Name = input.Name,
-                Email = input.Email,
-                Password = input.Password,
-                Administrator = input.Administrator
-            };
-
-            _userRepository.Create(user);
+            _userRepository.Delete(id);
 
             return NoContent();
         }

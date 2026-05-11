@@ -18,7 +18,7 @@ public class GameController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> CreateGame(
-        [FromBody] GameInput input
+        [FromBody] GameCreateInput input
     )
     {
         try
@@ -75,19 +75,20 @@ public class GameController : ControllerBase
 
     [HttpPut]
     public async Task<IActionResult> UpdateGame(
-        [FromBody] GameInput input
+        [FromBody] GameUpdateInput input
     )
     {
         try
         {
             var game = new Game()
             {
+                Id = input.Id,
                 Title = input.Title,
                 Price = input.Price,
                 PricePromotion = input.PricePromotion
             };
 
-            _gameRepository.Create(game);
+            _gameRepository.Update(game);
 
             return NoContent();
         }
@@ -99,19 +100,12 @@ public class GameController : ControllerBase
 
     [HttpDelete]
     public async Task<IActionResult> DeleteGame(
-        [FromBody] GameInput input
+        [FromBody] Guid id
     )
     {
         try
         {
-            var game = new Game()
-            {
-                Title = input.Title,
-                Price = input.Price,
-                PricePromotion = input.PricePromotion
-            };
-
-            _gameRepository.Create(game);
+            _gameRepository.Delete(id);
 
             return NoContent();
         }

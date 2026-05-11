@@ -1,5 +1,6 @@
 ﻿using CloudGames.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace CloudGames.Infrastructure.Repositories;
 
@@ -7,7 +8,15 @@ public class ApplicationDbContext : DbContext
 {
     private readonly string _connectionString;
 
-    public ApplicationDbContext() { }
+    public ApplicationDbContext() 
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        _connectionString = configuration.GetConnectionString("ConnectionString");
+    }
 
     public ApplicationDbContext(string connectionString)
     {
