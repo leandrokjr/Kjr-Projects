@@ -1,4 +1,5 @@
-﻿using CloudGames.Domain.Entities;
+﻿using Asp.Versioning;
+using CloudGames.Domain.Entities;
 using CloudGames.Domain.Inputs;
 using CloudGames.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ namespace CloudGames.HttpApi.Controllers;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
+[ApiVersion("1")]
 public class GameController : ControllerBase
 {
     private readonly IGameRepository _gameRepository;
@@ -27,7 +29,7 @@ public class GameController : ControllerBase
             {
                Title = input.Title,
                Price = input.Price,
-               PricePromotion = input.PricePromotion
+               CurrentPrice = input.Price
             };
 
             _gameRepository.Create(game);
@@ -48,9 +50,9 @@ public class GameController : ControllerBase
     {
         try
         {
-            _gameRepository.GetById(id);
+            var game = _gameRepository.GetById(id);
 
-            return Ok();
+            return Ok(game);
         }
         catch
         {
@@ -63,9 +65,40 @@ public class GameController : ControllerBase
     {
         try
         {
-            _gameRepository.GetAll();
+            var games = _gameRepository.GetAll().ToList();
 
-            return Ok();
+            return Ok(games);
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
+
+    [HttpPatch]
+    [Route("{id}/promotion/{percentage}")]
+    public async Task<IActionResult> AddGamePromotion(
+        [FromRoute] Guid id,
+        [FromRoute] int percentage
+    )
+    {
+        try
+        {
+            var gameById = _gameRepository.GetById(id);
+
+            var pricePromotion = gameById.Price - (gameById.Price * percentage / 100);
+
+            var game = new Game()
+            {
+                Id = gameById.Id,
+                Title = gameById.Title,
+                Price = gameById.Price,
+                CurrentPrice = pricePromotion
+            };
+
+            _gameRepository.Update(game);
+
+            return NoContent();
         }
         catch
         {
@@ -85,7 +118,7 @@ public class GameController : ControllerBase
                 Id = input.Id,
                 Title = input.Title,
                 Price = input.Price,
-                PricePromotion = input.PricePromotion
+                CurrentPrice = input.CurrentPrice
             };
 
             _gameRepository.Update(game);

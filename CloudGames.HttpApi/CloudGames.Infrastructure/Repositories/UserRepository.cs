@@ -8,4 +8,9 @@ internal class UserRepository : EFRepository<User>, IUserRepository
     public UserRepository(ApplicationDbContext context) : base(context)
     {
     }
+
+    public void AddGameByUser(User user, Game game)
+    {
+        user.Library.Add(game);
+    }
 }

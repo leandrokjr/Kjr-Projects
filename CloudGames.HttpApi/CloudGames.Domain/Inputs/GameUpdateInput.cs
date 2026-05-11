@@ -1,9 +1,13 @@
-﻿namespace CloudGames.Domain.Inputs;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CloudGames.Domain.Inputs;
 
 public class GameUpdateInput
 {
     public required Guid Id { get; set; }
     public required string Title { get; set; }
     public required decimal Price { get; set; }
-    public decimal? PricePromotion { get; set; }
+
+    [Range(1, 99, ErrorMessage = "O desconto deve ser entre 1% e 99%")]
+    public decimal CurrentPrice { get; set; }
 }
