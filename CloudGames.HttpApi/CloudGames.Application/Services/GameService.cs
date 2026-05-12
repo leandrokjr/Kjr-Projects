@@ -62,11 +62,16 @@ public class GameService : IGameService
         return game;
     }
 
-    public async Task<Game> UpdateGame(GameUpdateInput input)
+    public async Task<Game?> UpdateGame(GameUpdateInput input)
     {
+        var gameById = _gameRepository.GetById(input.Id);
+
+        if (gameById == null)
+            return gameById;
+
         var game = new Game()
         {
-            Id = input.Id,
+            Id = gameById.Id,
             Title = input.Title,
             Price = input.Price,
             CurrentPrice = input.CurrentPrice

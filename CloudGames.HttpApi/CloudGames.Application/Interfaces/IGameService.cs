@@ -13,7 +13,7 @@ public interface IGameService
 
     Task<Game?> CreateGamePromotion(Guid id, int percentage);
 
-    Task<Game> UpdateGame(GameUpdateInput input);
+    Task<Game?> UpdateGame(GameUpdateInput input);
 
     Task DeleteGame(Guid id);
 }

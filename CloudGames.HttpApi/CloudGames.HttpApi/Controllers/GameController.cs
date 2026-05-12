@@ -72,7 +72,10 @@ public class GameController : ControllerBase
         [FromBody] GameUpdateInput input
     )
     {
-        var game = _gameService.UpdateGame(input);
+        var game = await _gameService.UpdateGame(input);
+
+        if (game == null)
+            return NotFound();
 
         return Ok(game);
     }
