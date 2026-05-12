@@ -5,6 +5,8 @@ namespace CloudGames.Application.Interfaces;
 
 public interface IUserService
 {
+    Task<UserResponseDto?> ValidateLogin(LoginInput input);
+
     Task<UserResponseDto> CreateUser(UserCreateInput input);
 
     Task<UserResponseDto?> GetUserById(Guid id);

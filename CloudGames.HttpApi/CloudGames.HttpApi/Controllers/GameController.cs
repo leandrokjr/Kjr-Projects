@@ -1,13 +1,11 @@
-﻿using Asp.Versioning;
-using CloudGames.Application.Inputs;
+﻿using CloudGames.Application.Inputs;
 using CloudGames.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CloudGames.HttpApi.Controllers;
 
 [ApiController]
-[Route("api/v{version:apiVersion}/[controller]")]
-[ApiVersion("1")]
+[Route("api/[controller]")]
 public class GameController : ControllerBase
 {
     private readonly IGameService _gameService;

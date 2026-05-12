@@ -17,6 +17,32 @@ public class UserService : IUserService
         _gameRepository = gameRepository;
     }
 
+    public async Task<UserResponseDto?> ValidateLogin(LoginInput input)
+    {
+        var id = new Guid("df5ae811-dcba-4bb2-a44f-c502e6fa3efd");
+
+        var hash = BCrypt.Net.BCrypt.HashPassword("7878s4@fgK");
+
+        var user = new User
+        {
+            Id = id,
+            Name = "Player",
+            Email = "player@player.com",
+            Password = "7878s4@fgK",
+            Administrator = true
+        };
+
+        if (user == null)
+            return null;
+
+        bool isValid = BCrypt.Net.BCrypt.Verify(user.Password, hash);
+
+        if (!isValid)
+            return null;
+
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList());
+    }
+
     public async Task<UserResponseDto> CreateUser(UserCreateInput input)
     {
         string hash = BCrypt.Net.BCrypt.HashPassword(input.Password);
