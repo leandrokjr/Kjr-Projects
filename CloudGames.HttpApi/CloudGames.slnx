@@ -3,4 +3,5 @@
   <Project Path="CloudGames.Domain/CloudGames.Domain.csproj" />
   <Project Path="CloudGames.HttpApi/CloudGames.HttpApi.csproj" />
   <Project Path="CloudGames.Infrastructure/CloudGames.Infrastructure.csproj" />
+  <Project Path="CloudGames.Tests/CloudGames.Tests.csproj" Id="a13c0747-eb35-4de8-8db9-500cc41c13a0" />
 </Solution>
