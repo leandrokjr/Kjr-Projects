@@ -1,6 +1,6 @@
-﻿using CloudGames.Application.Interfaces;
+﻿using CloudGames.Application.Inputs;
+using CloudGames.Application.Interfaces;
 using CloudGames.Domain.Entities;
-using CloudGames.Domain.Inputs;
 using CloudGames.Domain.Repositories;
 
 namespace CloudGames.Application.Services;

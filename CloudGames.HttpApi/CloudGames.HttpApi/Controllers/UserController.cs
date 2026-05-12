@@ -1,6 +1,6 @@
 ﻿using Asp.Versioning;
+using CloudGames.Application.Inputs;
 using CloudGames.Application.Interfaces;
-using CloudGames.Domain.Inputs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CloudGames.HttpApi.Controllers;

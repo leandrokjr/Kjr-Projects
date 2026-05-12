@@ -1,5 +1,5 @@
-﻿using CloudGames.Domain.Entities;
-using CloudGames.Domain.Inputs;
+﻿using CloudGames.Application.Inputs;
+using CloudGames.Domain.Entities;
 
 namespace CloudGames.Application.Interfaces;
 

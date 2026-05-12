@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CloudGames.Domain.Inputs;
+namespace CloudGames.Application.Inputs;
 
 public class UserCreateInput
 {

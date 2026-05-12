@@ -1,6 +1,6 @@
-﻿using CloudGames.Application.Services;
+﻿using CloudGames.Application.Inputs;
+using CloudGames.Application.Services;
 using CloudGames.Domain.Entities;
-using CloudGames.Domain.Inputs;
 using CloudGames.Domain.Repositories;
 using Moq;
 

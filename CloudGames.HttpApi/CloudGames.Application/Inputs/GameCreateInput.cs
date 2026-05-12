@@ -1,4 +1,4 @@
-﻿namespace CloudGames.Domain.Inputs;
+﻿namespace CloudGames.Application.Inputs;
 
 public class GameCreateInput
 {

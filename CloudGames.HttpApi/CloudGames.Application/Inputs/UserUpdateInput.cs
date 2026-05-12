@@ -1,6 +1,6 @@
 ﻿using CloudGames.Domain.Entities;
 
-namespace CloudGames.Domain.Inputs;
+namespace CloudGames.Application.Inputs;
 
 public class UserUpdateInput
 {
