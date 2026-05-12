@@ -1,8 +1,6 @@
 ﻿using Asp.Versioning;
 using CloudGames.Application.Interfaces;
-using CloudGames.Domain.Entities;
 using CloudGames.Domain.Inputs;
-using CloudGames.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CloudGames.HttpApi.Controllers;
@@ -12,12 +10,10 @@ namespace CloudGames.HttpApi.Controllers;
 [ApiVersion("1")]
 public class GameController : ControllerBase
 {
-    private readonly IGameRepository _gameRepository;
     private readonly IGameService _gameService;
 
-    public GameController(IGameRepository gameRepository, IGameService gameService)
+    public GameController(IGameService gameService)
     {
-        _gameRepository = gameRepository;
         _gameService = gameService;
     }
 
@@ -28,16 +24,9 @@ public class GameController : ControllerBase
     {
         try
         {
-            var game = new Game()
-            {
-               Title = input.Title,
-               Price = input.Price,
-               CurrentPrice = input.Price
-            };
+            var game = await _gameService.CreateGame(input);
 
-            _gameRepository.Create(game);
-
-            return Created();
+            return Ok(game);
         }
         catch
         {
@@ -53,7 +42,10 @@ public class GameController : ControllerBase
     {
         try
         {
-            var game = _gameRepository.GetById(id);
+            var game = await _gameService.GetGameById(id);
+
+            if (game == null)
+                return NotFound();
 
             return Ok(game);
         }
@@ -68,7 +60,10 @@ public class GameController : ControllerBase
     {
         try
         {
-            var games = _gameRepository.GetAll().ToList();
+            var games = await _gameService.GetAllGames();
+
+            if (games == null)
+                return NotFound();
 
             return Ok(games);
         }
@@ -87,13 +82,12 @@ public class GameController : ControllerBase
     {
         try
         {
-            var gameById = _gameRepository.GetById(id);
+            var game = await _gameService.CreateGamePromotion(id, percentage);
 
-            var game = await _gameService.CreateGamePromotion(gameById, percentage);
+            if (game == null)
+                return NotFound();
 
-            _gameRepository.Update(game);
-
-            return NoContent();
+            return Ok();
         }
         catch
         {
@@ -108,17 +102,9 @@ public class GameController : ControllerBase
     {
         try
         {
-            var game = new Game()
-            {
-                Id = input.Id,
-                Title = input.Title,
-                Price = input.Price,
-                CurrentPrice = input.CurrentPrice
-            };
+            var game = _gameService.UpdateGame(input);
 
-            _gameRepository.Update(game);
-
-            return NoContent();
+            return Ok(game);
         }
         catch
         {
@@ -133,7 +119,7 @@ public class GameController : ControllerBase
     {
         try
         {
-            _gameRepository.Delete(id);
+            await _gameService.DeleteGame(id);
 
             return NoContent();
         }
