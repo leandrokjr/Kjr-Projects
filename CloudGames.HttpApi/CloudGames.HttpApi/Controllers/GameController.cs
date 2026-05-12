@@ -1,11 +1,13 @@
 ﻿using CloudGames.Application.Inputs;
 using CloudGames.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CloudGames.HttpApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class GameController : ControllerBase
 {
     private readonly IGameService _gameService;
@@ -16,6 +18,7 @@ public class GameController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreateGame(
         [FromBody] GameCreateInput input
     )
@@ -27,6 +30,7 @@ public class GameController : ControllerBase
 
     [HttpGet]
     [Route("{id}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetGameById(
         [FromRoute] Guid id
     )
@@ -41,6 +45,7 @@ public class GameController : ControllerBase
 
     [HttpGet]
     [Route("all")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAllGames()
     {
         var games = await _gameService.GetAllGames();
@@ -53,6 +58,7 @@ public class GameController : ControllerBase
 
     [HttpPatch]
     [Route("{id}/promotion/{percentage}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddGamePromotion(
         [FromRoute] Guid id,
         [FromRoute] int percentage
@@ -67,6 +73,7 @@ public class GameController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateGame(
         [FromBody] GameUpdateInput input
     )
@@ -80,6 +87,7 @@ public class GameController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteGame(
         [FromBody] Guid id
     )

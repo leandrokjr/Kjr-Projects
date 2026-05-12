@@ -1,11 +1,13 @@
 ﻿using CloudGames.Application.Inputs;
 using CloudGames.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CloudGames.HttpApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -16,6 +18,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> CreateUser(
         [FromBody] UserCreateInput input
     )
@@ -27,6 +30,7 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("{id}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetUserById(
         [FromRoute] Guid id
     )
@@ -41,6 +45,7 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("all")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAllUsers()
     {
         var users = await _userService.GetAllUsers();
@@ -53,6 +58,7 @@ public class UserController : ControllerBase
 
     [HttpPatch]
     [Route("{userId}/game/{gameId}")]
+    [AllowAnonymous]
     public async Task<IActionResult> AddGameByUser(
         [FromRoute] Guid userId,
         [FromRoute] Guid gameId
@@ -68,6 +74,7 @@ public class UserController : ControllerBase
 
     [HttpPatch]
     [Route("reset-password")]
+    [AllowAnonymous]
     public async Task<IActionResult> UpdatePasswordByUser(
         [FromBody] UserPasswordUpdateInput input
     )
@@ -81,6 +88,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPut]
+    [AllowAnonymous]
     public async Task<IActionResult> UpdateUser(
         [FromBody] UserUpdateInput input
     )
@@ -95,6 +103,7 @@ public class UserController : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteUser(
         [FromRoute] Guid id
     )
