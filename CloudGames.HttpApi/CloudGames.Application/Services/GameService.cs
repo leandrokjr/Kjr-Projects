@@ -32,9 +32,6 @@ public class GameService : IGameService
     {
         var game = _gameRepository.GetById(id);
 
-        if (game == null)
-            return null;
-
         return game;
     }
 

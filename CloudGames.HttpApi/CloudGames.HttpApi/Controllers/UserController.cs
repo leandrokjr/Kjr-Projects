@@ -1,8 +1,6 @@
 ﻿using Asp.Versioning;
 using CloudGames.Application.Interfaces;
-using CloudGames.Domain.Entities;
 using CloudGames.Domain.Inputs;
-using CloudGames.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CloudGames.HttpApi.Controllers;
@@ -12,14 +10,11 @@ namespace CloudGames.HttpApi.Controllers;
 [ApiVersion("1")]
 public class UserController : ControllerBase
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IGameRepository _gameRepository;
     private readonly IUserService _userService;
 
-    public UserController(IUserRepository userRepository, IGameRepository gameRepository)
+    public UserController(IUserService userService)
     {
-        _userRepository = userRepository;
-        _gameRepository = gameRepository;
+        _userService = userService;
     }
 
     [HttpPost]
@@ -27,18 +22,9 @@ public class UserController : ControllerBase
         [FromBody] UserCreateInput input
     )
     {
-        try
-        {
-            var user = await _userService.CreateUserService(input);
+        var user = await _userService.CreateUser(input);
 
-            _userRepository.Create(user);
-
-            return Created();
-        }
-        catch
-        {
-            return BadRequest();
-        }
+        return Ok(user);
     }
 
     [HttpGet]
@@ -47,31 +33,24 @@ public class UserController : ControllerBase
         [FromRoute] Guid id
     )
     {
-        try
-        {
-            var user = _userRepository.GetById(id);
+        var user = await _userService.GetUserById(id);
 
-            return Ok(user);
-        }
-        catch
-        {
-            return BadRequest();
-        }
+        if (user == null)
+            return NotFound();
+
+        return Ok(user);
     }
 
     [HttpGet]
+    [Route("all")]
     public async Task<IActionResult> GetAllUsers()
     {
-        try
-        {
-            var users = _userRepository.GetAll().ToList();
+        var users = await _userService.GetAllUsers();
 
-            return Ok(users);
-        }
-        catch
-        {
-            return BadRequest();
-        }
+        if (users == null)
+            return NotFound();
+
+        return Ok(users);
     }
 
     [HttpPatch]
@@ -81,22 +60,12 @@ public class UserController : ControllerBase
         [FromRoute] Guid gameId
     )
     {
-        try
-        {
-            var user = _userRepository.GetById(userId);
+        var user = await _userService.AddGameByUser(userId, gameId);
 
-            var game = _gameRepository.GetById(gameId);
+        if (user == null)
+            return NotFound();
 
-            _userRepository.AddGameByUser(user, game);
-
-            _userRepository.Update(user);
-
-            return Created();
-        }
-        catch
-        {
-            return BadRequest();
-        }
+        return Ok(user);
     }
 
     [HttpPatch]
@@ -105,23 +74,12 @@ public class UserController : ControllerBase
         [FromBody] UserPasswordUpdateInput input
     )
     {
-        try
-        {
-            var user = _userRepository.GetById(input.Id);
+        var user = await _userService.UpdatePasswordByUser(input);
 
-            var userNewPassword = await _userService.UpdatePasswordUserService(user, input.CurrentPassword, input.NewPassword);
-
-            if (userNewPassword == null)
-                return BadRequest();
-
-            _userRepository.Update(userNewPassword);
-
-            return Created();
-        }
-        catch
-        {
+        if (user == null)
             return BadRequest();
-        }
+
+        return Ok(user);
     }
 
     [HttpPut]
@@ -129,28 +87,12 @@ public class UserController : ControllerBase
         [FromBody] UserUpdateInput input
     )
     {
-        try
-        {
-            var hashPassword = _userRepository.GetById(input.Id).Password;
+        var user = await _userService.UpdateUser(input);
 
-            var user = new User()
-            {
-                Id = input.Id,
-                Name = input.Name,
-                Password = hashPassword,
-                Email = input.Email,
-                Administrator = input.Administrator,
-                Library = input.Library
-            };
-
-            _userRepository.Update(user);
-
-            return NoContent();
-        }
-        catch
-        {
+        if (user == null)
             return BadRequest();
-        }
+
+        return Ok(user);
     }
 
     [HttpDelete]
@@ -159,15 +101,8 @@ public class UserController : ControllerBase
         [FromRoute] Guid id
     )
     {
-        try
-        {
-            _userRepository.Delete(id);
+        await _userService.DeleteUser(id);
 
-            return NoContent();
-        }
-        catch
-        {
-            return BadRequest();
-        }
+        return NoContent();
     }
 }

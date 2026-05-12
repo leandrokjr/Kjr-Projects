@@ -42,6 +42,7 @@ public class GameController : ControllerBase
     }
 
     [HttpGet]
+    [Route("all")]
     public async Task<IActionResult> GetAllGames()
     {
         var games = await _gameService.GetAllGames();
@@ -62,7 +63,7 @@ public class GameController : ControllerBase
         var game = await _gameService.CreateGamePromotion(id, percentage);
 
         if (game == null)
-            return NotFound();
+            return BadRequest();
 
         return Ok();
     }
@@ -75,7 +76,7 @@ public class GameController : ControllerBase
         var game = await _gameService.UpdateGame(input);
 
         if (game == null)
-            return NotFound();
+            return BadRequest();
 
         return Ok(game);
     }

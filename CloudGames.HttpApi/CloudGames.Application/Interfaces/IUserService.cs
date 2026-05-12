@@ -5,7 +5,17 @@ namespace CloudGames.Application.Interfaces;
 
 public interface IUserService
 {
-    Task<User> CreateUserService(UserCreateInput input);
+    Task<User> CreateUser(UserCreateInput input);
 
-    Task<User?> UpdatePasswordUserService(User user, string currentPassword, string newPassword);
+    Task<User?> GetUserById(Guid id);
+
+    Task<List<User>?> GetAllUsers();
+
+    Task<User?> AddGameByUser(Guid userId, Guid gameId);
+
+    Task<User?> UpdatePasswordByUser(UserPasswordUpdateInput input);
+
+    Task<User?> UpdateUser(UserUpdateInput input);
+
+    Task DeleteUser(Guid id);
 }
