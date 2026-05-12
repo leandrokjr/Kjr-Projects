@@ -1,4 +1,5 @@
-﻿using CloudGames.Application.Inputs;
+﻿using CloudGames.Application.DTOs;
+using CloudGames.Application.Inputs;
 using CloudGames.Application.Interfaces;
 using CloudGames.Domain.Entities;
 using CloudGames.Domain.Repositories;
@@ -14,7 +15,7 @@ public class GameService : IGameService
         _gameRepository = gameRepository;
     }
 
-    public async Task<Game> CreateGame(GameCreateInput input)
+    public async Task<GameResponseDto> CreateGame(GameCreateInput input)
     {
         var game = new Game()
         {
@@ -25,46 +26,46 @@ public class GameService : IGameService
 
         _gameRepository.Create(game);
 
-        return game;
+        return new GameResponseDto(game.Id, game.Title, game.Price, game.CurrentPrice);
     }
 
-    public async Task<Game?> GetGameById(Guid id)
+    public async Task<GameResponseDto?> GetGameById(Guid id)
     {
         var game = _gameRepository.GetById(id);
 
-        return game;
+        return new GameResponseDto(game.Id, game.Title, game.Price, game.CurrentPrice);
     }
 
-    public async Task<List<Game>?> GetAllGames()
+    public async Task<List<GameResponseDto>?> GetAllGames()
     {
         var games = _gameRepository.GetAll().ToList();
 
         if (!games.Any())
             return null;
 
-        return games;
+        return games.Select(game => new GameResponseDto(game.Id, game.Title, game.Price, game.CurrentPrice)).ToList();
     }
 
-    public async Task<Game?> CreateGamePromotion(Guid id, int percentage)
+    public async Task<GameResponseDto?> CreateGamePromotion(Guid id, int percentage)
     {
         var game = _gameRepository.GetById(id);
 
         if (game == null)
-            return game;
+            return null;
 
         game.ApplyDiscount(percentage);
 
         _gameRepository.Update(game);
 
-        return game;
+        return new GameResponseDto(game.Id, game.Title, game.Price, game.CurrentPrice);
     }
 
-    public async Task<Game?> UpdateGame(GameUpdateInput input)
+    public async Task<GameResponseDto?> UpdateGame(GameUpdateInput input)
     {
         var gameById = _gameRepository.GetById(input.Id);
 
         if (gameById == null)
-            return gameById;
+            return null;
 
         var game = new Game()
         {
@@ -76,7 +77,7 @@ public class GameService : IGameService
 
         _gameRepository.Update(game);
 
-        return game;
+        return new GameResponseDto(game.Id, game.Title, game.Price, game.CurrentPrice);
     }
 
     public async Task DeleteGame(Guid id)

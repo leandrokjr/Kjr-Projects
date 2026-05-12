@@ -32,8 +32,8 @@ public class UserServiceTests
         var result = await _userService.CreateUser(input);
 
         Assert.NotNull(result);
-        Assert.NotEqual("123A1111B", result.Password);
-        Assert.True(BCrypt.Net.BCrypt.Verify("123A1111B", result.Password));
+        Assert.Equal(input.Name, result.Name);
+        Assert.Equal(input.Email, result.Email);
         _userRepositoryMock.Verify(r => r.Create(It.IsAny<User>()), Times.Once);
     }
 
@@ -144,7 +144,7 @@ public class UserServiceTests
 
         var result = await _userService.UpdateUser(input);
 
-        Assert.Equal(originalPassword, result.Password);
+        Assert.NotNull(result);
         Assert.Equal("Hasher Hash", result.Name);
         _userRepositoryMock.Verify(r => r.Update(It.IsAny<User>()), Times.Once);
     }

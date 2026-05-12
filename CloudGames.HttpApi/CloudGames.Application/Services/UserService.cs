@@ -1,4 +1,5 @@
-﻿using CloudGames.Application.Inputs;
+﻿using CloudGames.Application.DTOs;
+using CloudGames.Application.Inputs;
 using CloudGames.Application.Interfaces;
 using CloudGames.Domain.Entities;
 using CloudGames.Domain.Repositories;
@@ -10,13 +11,13 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IGameRepository _gameRepository;
 
-    public UserService(IUserRepository userRepository, IGameRepository gameRepository   )
+    public UserService(IUserRepository userRepository, IGameRepository gameRepository)
     {
         _userRepository = userRepository;
         _gameRepository = gameRepository;
     }
 
-    public async Task<User> CreateUser(UserCreateInput input)
+    public async Task<UserResponseDto> CreateUser(UserCreateInput input)
     {
         string hash = BCrypt.Net.BCrypt.HashPassword(input.Password);
 
@@ -25,38 +26,37 @@ public class UserService : IUserService
             Name = input.Name,
             Email = input.Email,
             Password = hash,
-            Administrator = input.Administrator,
-            Library = new List<Game>()
+            Administrator = input.Administrator
         };
 
         _userRepository.Create(user);
 
-        return user;
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList());
     }
 
-    public async Task<User?> GetUserById(Guid id)
+    public async Task<UserResponseDto?> GetUserById(Guid id)
     {
         var user = _userRepository.GetById(id);
 
-        return user;
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList());
     }
 
-    public async Task<List<User>?> GetAllUsers()
+    public async Task<List<UserResponseDto>?> GetAllUsers()
     {
         var users = _userRepository.GetAll().ToList();
 
         if (!users.Any())
             return null;
 
-        return users;
+        return users.Select(user => new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList())).ToList();
     }
 
-    public async Task<User?> AddGameByUser(Guid userId, Guid gameId)
+    public async Task<UserResponseDto?> AddGameByUser(Guid userId, Guid gameId)
     {
         var user = _userRepository.GetById(userId);
 
         if (user == null)
-            return user;
+            return null;
 
         var game = _gameRepository.GetById(gameId);
 
@@ -64,10 +64,10 @@ public class UserService : IUserService
 
         _userRepository.Update(user);
 
-        return user;
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList());
     }
 
-    public async Task<User?> UpdatePasswordByUser(UserPasswordUpdateInput input)
+    public async Task<UserResponseDto?> UpdatePasswordByUser(UserPasswordUpdateInput input)
     {
         var user = _userRepository.GetById(input.Id);
 
@@ -87,15 +87,15 @@ public class UserService : IUserService
 
         _userRepository.Update(updatedUser);
 
-        return user;
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList());
     }
 
-    public async Task<User?> UpdateUser(UserUpdateInput input)
+    public async Task<UserResponseDto?> UpdateUser(UserUpdateInput input)
     {
         var userById = _userRepository.GetById(input.Id);
 
         if (userById == null)
-            return userById;
+            return null;
 
         var hashPassword = _userRepository.GetById(input.Id).Password;
 
@@ -111,7 +111,7 @@ public class UserService : IUserService
 
         _userRepository.Update(user);
 
-        return user;
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList());
     }
 
     public async Task DeleteUser(Guid id)
