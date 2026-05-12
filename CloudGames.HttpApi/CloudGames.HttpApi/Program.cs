@@ -1,8 +1,21 @@
-using CloudGames.Infrastructure.Repositories;
+using CloudGames.HttpApi.Middlewares;
 using CloudGames.Infrastructure;
+using CloudGames.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var app = builder.Build();
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
@@ -19,9 +32,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(configuration.GetConnectionString("ConnectionString"));
 }, ServiceLifetime.Scoped);
-
-
-var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

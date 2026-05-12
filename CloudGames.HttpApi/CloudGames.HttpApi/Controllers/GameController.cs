@@ -22,16 +22,9 @@ public class GameController : ControllerBase
         [FromBody] GameCreateInput input
     )
     {
-        try
-        {
-            var game = await _gameService.CreateGame(input);
+        var game = await _gameService.CreateGame(input);
 
-            return Ok(game);
-        }
-        catch
-        {
-            return BadRequest();
-        }
+        return Ok(game);
     }
 
     [HttpGet]
@@ -40,37 +33,23 @@ public class GameController : ControllerBase
         [FromRoute] Guid id
     )
     {
-        try
-        {
-            var game = await _gameService.GetGameById(id);
+        var game = await _gameService.GetGameById(id);
 
-            if (game == null)
-                return NotFound();
+        if (game == null)
+            return NotFound();
 
-            return Ok(game);
-        }
-        catch
-        {
-            return BadRequest();
-        }
+        return Ok(game);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllGames()
     {
-        try
-        {
-            var games = await _gameService.GetAllGames();
+        var games = await _gameService.GetAllGames();
 
-            if (games == null)
-                return NotFound();
+        if (games == null)
+            return NotFound();
 
-            return Ok(games);
-        }
-        catch
-        {
-            return BadRequest();
-        }
+        return Ok(games);
     }
 
     [HttpPatch]
@@ -80,19 +59,12 @@ public class GameController : ControllerBase
         [FromRoute] int percentage
     )
     {
-        try
-        {
-            var game = await _gameService.CreateGamePromotion(id, percentage);
+        var game = await _gameService.CreateGamePromotion(id, percentage);
 
-            if (game == null)
-                return NotFound();
+        if (game == null)
+            return NotFound();
 
-            return Ok();
-        }
-        catch
-        {
-            return BadRequest();
-        }
+        return Ok();
     }
 
     [HttpPut]
@@ -100,16 +72,9 @@ public class GameController : ControllerBase
         [FromBody] GameUpdateInput input
     )
     {
-        try
-        {
-            var game = _gameService.UpdateGame(input);
+        var game = _gameService.UpdateGame(input);
 
-            return Ok(game);
-        }
-        catch
-        {
-            return BadRequest();
-        }
+        return Ok(game);
     }
 
     [HttpDelete]
@@ -117,15 +82,8 @@ public class GameController : ControllerBase
         [FromBody] Guid id
     )
     {
-        try
-        {
-            await _gameService.DeleteGame(id);
+        await _gameService.DeleteGame(id);
 
-            return NoContent();
-        }
-        catch
-        {
-            return BadRequest();
-        }
+        return NoContent();
     }
 }
