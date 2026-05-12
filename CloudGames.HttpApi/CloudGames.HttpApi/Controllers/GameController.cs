@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using CloudGames.Application.Interfaces;
 using CloudGames.Domain.Entities;
 using CloudGames.Domain.Inputs;
 using CloudGames.Domain.Repositories;
@@ -12,10 +13,12 @@ namespace CloudGames.HttpApi.Controllers;
 public class GameController : ControllerBase
 {
     private readonly IGameRepository _gameRepository;
+    private readonly IGameService _gameService;
 
-    public GameController(IGameRepository gameRepository)
+    public GameController(IGameRepository gameRepository, IGameService gameService)
     {
         _gameRepository = gameRepository;
+        _gameService = gameService;
     }
 
     [HttpPost]
@@ -86,15 +89,7 @@ public class GameController : ControllerBase
         {
             var gameById = _gameRepository.GetById(id);
 
-            var pricePromotion = gameById.Price - (gameById.Price * percentage / 100);
-
-            var game = new Game()
-            {
-                Id = gameById.Id,
-                Title = gameById.Title,
-                Price = gameById.Price,
-                CurrentPrice = pricePromotion
-            };
+            var game = await _gameService.CreateGamePromotion(gameById, percentage);
 
             _gameRepository.Update(game);
 
