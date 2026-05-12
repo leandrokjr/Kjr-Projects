@@ -18,7 +18,11 @@ public class GameServiceTests
     [Fact]
     public async Task CreateGame_ShouldReturnValidGame_WhenInputIsCorrect()
     {
-        var input = new GameCreateInput { Title = "The Last of Us", Price = 299 };
+        var input = new GameCreateInput 
+        { 
+            Title = "The Last of Us", 
+            Price = 299 
+        };
 
         var result = await _gameService.CreateGame(input);
 
@@ -54,7 +58,13 @@ public class GameServiceTests
     public async Task CreateGamePromotion_ShouldUpdatePrice_WhenGameExists(decimal price, string title, int percentage, decimal expectedPrice)
     {
         var id = Guid.NewGuid();
-        var game = new Game { Id = id, Title = title, Price = price, CurrentPrice = price };
+        var game = new Game 
+        { 
+            Id = id, 
+            Title = title, 
+            Price = price, 
+            CurrentPrice = price 
+        };
 
         _repositoryMock.Setup(r => r.GetById(id)).Returns(game);
 
@@ -75,6 +85,7 @@ public class GameServiceTests
             Price = 250,
             CurrentPrice = 250
         };
+
         _repositoryMock.Setup(r => r.GetById(It.IsAny<Guid>())).Returns((Game)null);
 
         var result = await _gameService.UpdateGame(input);
