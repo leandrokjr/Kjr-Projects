@@ -33,6 +33,9 @@ public class GameService : IGameService
     {
         var game = _gameRepository.GetById(id);
 
+        if (game == null)
+            return null;
+
         return new GameResponseDto(game.Id, game.Title, game.Price, game.CurrentPrice);
     }
 

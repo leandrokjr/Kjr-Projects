@@ -64,6 +64,9 @@ public class UserService : IUserService
     {
         var user = _userRepository.GetById(id);
 
+        if (user == null)
+            return null;
+
         return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList());
     }
 
