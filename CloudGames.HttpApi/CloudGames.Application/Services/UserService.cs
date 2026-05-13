@@ -19,23 +19,12 @@ public class UserService : IUserService
 
     public async Task<UserResponseDto?> ValidateLogin(LoginInput input)
     {
-        var id = new Guid("df5ae811-dcba-4bb2-a44f-c502e6fa3efd");
-
-        var hash = BCrypt.Net.BCrypt.HashPassword("7878s4@fgK");
-
-        var user = new User
-        {
-            Id = id,
-            Name = "Player",
-            Email = "player@player.com",
-            Password = "7878s4@fgK",
-            Administrator = true
-        };
+        var user = await _userRepository.GetByEmail(input.Email);
 
         if (user == null)
             return null;
 
-        bool isValid = BCrypt.Net.BCrypt.Verify(user.Password, hash);
+        bool isValid = BCrypt.Net.BCrypt.Verify(input.Password, user.Password);
 
         if (!isValid)
             return null;
