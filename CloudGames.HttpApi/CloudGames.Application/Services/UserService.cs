@@ -27,7 +27,9 @@ public class UserService : IUserService
         if (!isValid)
             return null;
 
-        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Libraries.ToList());
+        List<GameDto> games = user.Libraries.Select(l => new GameDto(l.Game.Id, l.Game.Title)).ToList();
+
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, games);
     }
 
     public async Task<UserResponseDto> CreateUser(UserCreateInput input)
@@ -44,7 +46,9 @@ public class UserService : IUserService
 
         _userRepository.Create(user);
 
-        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Libraries.ToList());
+        List<GameDto> games = user.Libraries.Select(l => new GameDto(l.Game.Id, l.Game.Title)).ToList();
+
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, games);
     }
 
     public async Task<UserResponseDto?> GetUserById(Guid id)
@@ -54,7 +58,9 @@ public class UserService : IUserService
         if (user == null)
             return null;
 
-        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Libraries.ToList());
+        List<GameDto> games = user.Libraries.Select(l => new GameDto(l.Game.Id, l.Game.Title)).ToList();
+
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, games);
     }
 
     public async Task<List<UserResponseDto>?> GetAllUsers()
@@ -64,7 +70,8 @@ public class UserService : IUserService
         if (!users.Any())
             return null;
 
-        return users.Select(user => new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Libraries.ToList())).ToList();
+        return users.Select(user => new UserResponseDto(
+            user.Id, user.Name, user.Email, user.Administrator, user.Libraries.Select(l => new GameDto(l.Game.Id, l.Game.Title)).ToList())).ToList();
     }
 
     public async Task<UserResponseDto?> UpdatePasswordByUser(UserPasswordUpdateInput input)
@@ -87,7 +94,9 @@ public class UserService : IUserService
 
         _userRepository.Update(updatedUser);
 
-        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Libraries.ToList());
+        List<GameDto> games = user.Libraries.Select(l => new GameDto(l.Game.Id, l.Game.Title)).ToList();
+
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, games);
     }
 
     public async Task<UserResponseDto?> UpdateUser(UserUpdateInput input)
@@ -111,7 +120,9 @@ public class UserService : IUserService
 
         _userRepository.Update(user);
 
-        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Libraries.ToList());
+        List<GameDto> games = user.Libraries.Select(l => new GameDto(l.Game.Id, l.Game.Title)).ToList();
+
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, games);
     }
 
     public async Task DeleteUser(Guid id)

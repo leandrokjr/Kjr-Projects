@@ -2,6 +2,7 @@
 using CloudGames.Application.Interfaces;
 using CloudGames.Domain.Entities;
 using CloudGames.Domain.Repositories;
+using static CloudGames.Application.DTOs.UserResponseDto;
 
 namespace CloudGames.Application.Services;
 public class LibraryService : ILibraryService
@@ -49,7 +50,9 @@ public class LibraryService : ILibraryService
 
         var updatedUser = _userRepository.GetById(userId);
 
-        return new UserResponseDto(updatedUser.Id, updatedUser.Name, updatedUser.Email, updatedUser.Administrator, updatedUser.Libraries.ToList());
+        List<GameDto> games = user.Libraries.Select(l => new GameDto(l.Game.Id, l.Game.Title)).ToList();
+
+        return new UserResponseDto(updatedUser.Id, updatedUser.Name, updatedUser.Email, updatedUser.Administrator, games);
     }
 }
 
