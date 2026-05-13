@@ -59,10 +59,12 @@ builder.Services.AddSwaggerGen(c =>
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
+var connectionString = builder.Configuration.GetConnectionString("ConnectionString");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseNpgsql(configuration.GetConnectionString("ConnectionString"));
-}, ServiceLifetime.Scoped);
+    options.UseNpgsql(connectionString);
+});
 
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
