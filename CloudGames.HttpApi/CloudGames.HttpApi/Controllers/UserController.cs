@@ -57,22 +57,6 @@ public class UserController : ControllerBase
     }
 
     [HttpPatch]
-    [Route("{userId}/game/{gameId}")]
-    [AllowAnonymous]
-    public async Task<IActionResult> AddGameByUser(
-        [FromRoute] Guid userId,
-        [FromRoute] Guid gameId
-    )
-    {
-        var user = await _userService.AddGameByUser(userId, gameId);
-
-        if (user == null)
-            return NotFound();
-
-        return Ok(user);
-    }
-
-    [HttpPatch]
     [Route("reset-password")]
     [AllowAnonymous]
     public async Task<IActionResult> UpdatePasswordByUser(

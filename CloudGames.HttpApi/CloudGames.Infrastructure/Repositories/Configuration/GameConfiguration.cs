@@ -14,5 +14,9 @@ public class GameConfiguration : IEntityTypeConfiguration<Game>
         builder.Property(e => e.Title).IsRequired().HasColumnType("VARCHAR(60)").HasMaxLength(60);
         builder.Property(e => e.Price).HasColumnType("DECIMAL(14,2)").IsRequired();
         builder.Property(e => e.CurrentPrice).HasColumnType("DECIMAL(14,2)");
+        builder.HasMany(g => g.Libraries)
+               .WithOne(l => l.Game)
+               .HasForeignKey(l => l.GameId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }

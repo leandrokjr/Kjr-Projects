@@ -9,12 +9,10 @@ namespace CloudGames.Application.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-    private readonly IGameRepository _gameRepository;
 
-    public UserService(IUserRepository userRepository, IGameRepository gameRepository)
+    public UserService(IUserRepository userRepository)
     {
         _userRepository = userRepository;
-        _gameRepository = gameRepository;
     }
 
     public async Task<UserResponseDto?> ValidateLogin(LoginInput input)
@@ -29,7 +27,7 @@ public class UserService : IUserService
         if (!isValid)
             return null;
 
-        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList());
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Libraries.ToList());
     }
 
     public async Task<UserResponseDto> CreateUser(UserCreateInput input)
@@ -46,7 +44,7 @@ public class UserService : IUserService
 
         _userRepository.Create(user);
 
-        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList());
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Libraries.ToList());
     }
 
     public async Task<UserResponseDto?> GetUserById(Guid id)
@@ -56,7 +54,7 @@ public class UserService : IUserService
         if (user == null)
             return null;
 
-        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList());
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Libraries.ToList());
     }
 
     public async Task<List<UserResponseDto>?> GetAllUsers()
@@ -66,23 +64,7 @@ public class UserService : IUserService
         if (!users.Any())
             return null;
 
-        return users.Select(user => new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList())).ToList();
-    }
-
-    public async Task<UserResponseDto?> AddGameByUser(Guid userId, Guid gameId)
-    {
-        var user = _userRepository.GetById(userId);
-
-        if (user == null)
-            return null;
-
-        var game = _gameRepository.GetById(gameId);
-
-        _userRepository.AddGameByUser(user, game);
-
-        _userRepository.Update(user);
-
-        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList());
+        return users.Select(user => new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Libraries.ToList())).ToList();
     }
 
     public async Task<UserResponseDto?> UpdatePasswordByUser(UserPasswordUpdateInput input)
@@ -100,12 +82,12 @@ public class UserService : IUserService
             Email = user.Email,
             Password = hashNewPassword,
             Administrator = user.Administrator,
-            Library = user.Library
+            Libraries = user.Libraries
         };
 
         _userRepository.Update(updatedUser);
 
-        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList());
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Libraries.ToList());
     }
 
     public async Task<UserResponseDto?> UpdateUser(UserUpdateInput input)
@@ -124,12 +106,12 @@ public class UserService : IUserService
             Password = hashPassword,
             Email = input.Email,
             Administrator = input.Administrator,
-            Library = input.Library
+            Libraries = input.Libraries
         };
 
         _userRepository.Update(user);
 
-        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Library.ToList());
+        return new UserResponseDto(user.Id, user.Name, user.Email, user.Administrator, user.Libraries.ToList());
     }
 
     public async Task DeleteUser(Guid id)

@@ -8,5 +8,5 @@ public class UserUpdateInput
     public required string Name { get; set; }
     public required string Email { get; set; }
     public bool Administrator { get; set; }
-    public List<Game> Library { get; set; } = new List<Game>();
+    public List<Library> Libraries { get; set; } = new List<Library>();
 }

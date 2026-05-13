@@ -9,14 +9,12 @@ namespace CloudGames.Tests.Application;
 public class UserServiceTests
 {
     private readonly Mock<IUserRepository> _userRepositoryMock;
-    private readonly Mock<IGameRepository> _gameRepositoryMock;
     private readonly UserService _userService;
 
     public UserServiceTests()
     {
         _userRepositoryMock = new Mock<IUserRepository>();
-        _gameRepositoryMock = new Mock<IGameRepository>();
-        _userService = new UserService(_userRepositoryMock.Object, _gameRepositoryMock.Object);
+        _userService = new UserService(_userRepositoryMock.Object);
     }
 
     [Fact]
@@ -55,38 +53,6 @@ public class UserServiceTests
         var result = await _userService.GetAllUsers();
 
         Assert.Null(result);
-    }
-
-    [Fact]
-    public async Task AddGameByUser_ShouldWork_WhenUserAndGameExist()
-    {
-        var userId = Guid.NewGuid();
-        var gameId = Guid.NewGuid();
-
-        var user = new User 
-        { 
-            Id = userId, 
-            Name = "Player", 
-            Email = "player@player.com", 
-            Password = "7878s4@fgK", 
-            Administrator = true 
-        };
-
-        var game = new Game 
-        { 
-            Id = gameId, 
-            Title = "Need For Speed Underground II",
-            Price = 49
-        };
-
-        _userRepositoryMock.Setup(r => r.GetById(userId)).Returns(user);
-        _gameRepositoryMock.Setup(r => r.GetById(gameId)).Returns(game);
-
-        var result = await _userService.AddGameByUser(userId, gameId);
-
-        Assert.NotNull(result);
-        _userRepositoryMock.Verify(r => r.AddGameByUser(user, game), Times.Once);
-        _userRepositoryMock.Verify(r => r.Update(user), Times.Once);
     }
 
     [Fact]

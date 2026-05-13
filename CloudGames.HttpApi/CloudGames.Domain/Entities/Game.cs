@@ -5,6 +5,7 @@ public class Game : Entity
     public required string Title { get; set; }
     public required decimal Price { get; set; }
     public decimal CurrentPrice { get; set; }
+    public ICollection<Library> Libraries { get; set; } = new List<Library>();
 
     public void ApplyDiscount(int percentage)
     {

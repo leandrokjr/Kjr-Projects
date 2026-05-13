@@ -13,8 +13,6 @@ public interface IUserService
 
     Task<List<UserResponseDto>?> GetAllUsers();
 
-    Task<UserResponseDto?> AddGameByUser(Guid userId, Guid gameId);
-
     Task<UserResponseDto?> UpdatePasswordByUser(UserPasswordUpdateInput input);
 
     Task<UserResponseDto?> UpdateUser(UserUpdateInput input);

@@ -14,9 +14,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(e => e.Email).HasColumnType("VARCHAR(60)").IsRequired().HasMaxLength(60);
         builder.Property(e => e.Password).HasColumnType("VARCHAR(100)").IsRequired();
         builder.Property(e => e.Administrator).HasColumnType("BOOL").IsRequired();
-
-        builder.HasMany(e => e.Library)
-           .WithOne()
-           .HasForeignKey("UserId");
+        builder.HasMany(u => u.Libraries)
+               .WithOne(l => l.User)
+               .HasForeignKey(l => l.UserId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }
