@@ -15,8 +15,7 @@ public class ApplicationDbContext : DbContext
             .AddJsonFile("appsettings.json")
             .Build();
 
-        _connectionString = "Host=db.dodyutgvufldaewprxaj.supabase.co;Database=postgres;Username=postgres;Password=cl0udGAMYS5089;Port=5432;";
-        //_connectionString = configuration.GetConnectionString("ConnectionString");
+        _connectionString = configuration.GetConnectionString("ConnectionString");
     }
 
     public ApplicationDbContext(string connectionString)
